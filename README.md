@@ -1,4 +1,5 @@
-# generate_log.py
+Generate logs
+----------
 
 Small utility to create a CSV "log" file populated with random, row-coherent data.
 
@@ -16,7 +17,8 @@ Create a 5 GB file:
 
     python3 generate_log.py --size 5GB --output log_5GB.csv -v
 
-Start ClickHouse (example):
+ClickHouse
+----------
 
     alias chs='clickhouse server --config-file=./config.xml'
     alias chc='clickhouse client'
