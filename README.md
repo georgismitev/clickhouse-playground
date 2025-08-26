@@ -32,3 +32,19 @@ or for zsh:
 Alternatively, start a new terminal session to pick up the changes.
 
 Columns produced: id, created_at, updated_at, username_md5, first_name, last_name, bio
+
+Migrations
+----------
+
+This repo includes simple SQL migrations under `migrations/`:
+
+- `001_create_database.sql` — creates `logs_db` database
+- `002_create_log_table.sql` — creates `logs_db.logs` table matching the generated CSV
+
+To apply migrations (requires `clickhouse client` in PATH):
+
+```bash
+./scripts/apply-migrations.sh
+```
+
+The script runs each `.sql` in `migrations/` in lexicographic order.

@@ -23,6 +23,7 @@
         <default>
             <password></password>
             <profile>default</profile>
+            <default_database>logs_db</default_database>
         </default>
     </users>
 
