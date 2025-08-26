@@ -1,0 +1,33 @@
+<yandex>
+    <!-- data storage -->
+    <path>./.clickhouse/data/</path>
+    <metadata_path>./.clickhouse/metadata/</metadata_path>
+    <user_files_path>./.clickhouse/user_files/</user_files_path>
+    <format_schema_path>./.clickhouse/format_schemas/</format_schema_path>
+
+    <!-- network listener settings: required so ClickHouse can start servers -->
+    <tcp_port>9000</tcp_port>
+    <http_port>8123</http_port>
+    <!-- Bind to all interfaces; change to a specific IP if needed. -->
+    <listen_host>0.0.0.0</listen_host>
+
+    <!-- logs -->
+    <logger>
+        <log>logs/clickhouse-server.log</log>
+        <errorlog>logs/clickhouse-server.err.log</errorlog>
+    </logger>
+
+    <!-- Minimal users to allow local connections. WARNING: empty password is insecure;
+         use only for local testing. Replace with a strong password for production. -->
+    <users>
+        <default>
+            <password></password>
+            <profile>default</profile>
+        </default>
+    </users>
+
+    <!-- Minimal settings profiles to ensure the 'default' profile exists. -->
+    <profiles>
+        <default/>
+    </profiles>
+</yandex>
