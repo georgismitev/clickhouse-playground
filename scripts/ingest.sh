@@ -79,15 +79,15 @@ if [ "$rows" -le 0 ]; then
 fi
 
 ROWS_PER_SEC=$(echo "$rows / $ELAPSED" | bc -l)
-SECS_PER_10K=$(echo "$ELAPSED * 10000 / $rows" | bc -l)
+SECS_PER_100K=$(echo "$ELAPSED * 100000 / $rows" | bc -l)
 
 printf "Inserted %d rows in %.3f s (%.0f rows/s)\n" "$rows" "$ELAPSED" "$ROWS_PER_SEC"
 
-cmp=$(echo "$SECS_PER_10K <= 1.0" | bc -l)
+cmp=$(echo "$SECS_PER_100K <= 1.0" | bc -l)
 if [ "$cmp" -eq 1 ]; then
-  printf "Result: %.3f sec per 10k rows — ✅\n" "$SECS_PER_10K"
+  printf "Result: %.3f sec per 100k rows — ✅\n" "$SECS_PER_100K"
 else
-  printf "Result: %.3f sec per 10k rows — 😭\n" "$SECS_PER_10K"
+  printf "Result: %.3f sec per 100k rows — 😭\n" "$SECS_PER_100K"
 fi
 
 exit $RC
