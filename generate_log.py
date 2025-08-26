@@ -80,10 +80,13 @@ def gen_row(rid: int):
     updated = created + timedelta(days=random.randint(0, 365), seconds=random.randint(0, 86400))
     username_hash = md5_username(first, last, rid)
     bio = make_bio(first, last, job, city, HOBBIES, rid)
+    # ClickHouse DateTime expects 'YYYY-MM-DD hh:mm:ss' (no fractional seconds or timezone)
+    created_s = created.strftime("%Y-%m-%d %H:%M:%S")
+    updated_s = updated.strftime("%Y-%m-%d %H:%M:%S")
     return {
         "id": rid,
-        "created_at": created.isoformat() + "Z",
-        "updated_at": updated.isoformat() + "Z",
+        "created_at": created_s,
+        "updated_at": updated_s,
         "username_md5": username_hash,
         "first_name": first,
         "last_name": last,
@@ -123,8 +126,7 @@ def generate_file(path: str, target_bytes: int, verbose: bool = False):
 def main(argv=None):
     p = argparse.ArgumentParser(description="Generate a CSV log file of approximate size.")
     p.add_argument("--size", "-s", default="100MB", help="Target size (e.g. 100MB, 1G, 512K). Default: 100MB")
-    p.add_argument("--output", "-o", default="log.csv", help="Output file path. Default: log.csv")
-    p.add_argument("--verbose", "-v", action="store_true", help="Verbose progress")
+    # Output filename is hardcoded to 'log.csv' per workspace convention
     args = p.parse_args(argv)
 
     try:
@@ -137,13 +139,13 @@ def main(argv=None):
         print("Size must be > 0")
         sys.exit(2)
 
-    if args.verbose:
-        print(f"Generating file '{args.output}' target={target} bytes")
+    output_path = "log.csv"
+    # Always verbose per workspace convention
+    print(f"Generating file '{output_path}' target={target} bytes")
 
-    rows = generate_file(args.output, target, verbose=args.verbose)
+    rows = generate_file(output_path, target, verbose=True)
 
-    if args.verbose:
-        print(f"Done. Wrote {rows} rows to {args.output}")
+    print(f"Done. Wrote {rows} rows to {output_path}")
 
 
 if __name__ == "__main__":
