@@ -125,7 +125,7 @@ def generate_file(path: str, target_bytes: int, verbose: bool = False):
 
 def main(argv=None):
     p = argparse.ArgumentParser(description="Generate a CSV log file of approximate size.")
-    p.add_argument("--size", "-s", default="100MB", help="Target size (e.g. 100MB, 1G, 512K). Default: 100MB")
+    p.add_argument("--size", "-s", default="100MB", help="Target size (e.g. 100MB, 1G, 512K). Default: 500MB")
     # Output filename is hardcoded to 'log.csv' per workspace convention
     args = p.parse_args(argv)
 

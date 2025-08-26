@@ -15,6 +15,7 @@
     <logger>
         <log>logs/clickhouse-server.log</log>
         <errorlog>logs/clickhouse-server.err.log</errorlog>
+        <level>information</level>
     </logger>
 
     <!-- Minimal users to allow local connections. WARNING: empty password is insecure;
