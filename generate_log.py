@@ -94,13 +94,21 @@ def gen_row(rid: int):
     }
 
 
-def generate_file(path: str, target_bytes: int, verbose: bool = False):
+def generate_file(path: str, target_bytes: int, verbose: bool = False, include_header: bool = False):
     header = ["id", "created_at", "updated_at", "username_md5", "first_name", "last_name", "bio"]
     rows = 0
     # open text mode so csv handles quoting, but measure bytes via buffer
+    # open with newline="" (recommended for csv module) but instruct the
+    # writer to use Unix line endings so we don't emit CRLF (which ClickHouse
+    # can reject when interpreting as TSV or when clients expect LF).
     with open(path, "w", encoding="utf-8", newline="") as f:
-        writer = csv.writer(f)
-        writer.writerow(header)
+        # csv.writer defaults to '\r\n' lineterminator (excel dialect).
+        # Force '\n' to produce Unix-style line endings.
+        writer = csv.writer(f, lineterminator='\n')
+        # write header only when requested (default is no header to allow
+        # TSV/format-specific imports without a header row)
+        if include_header:
+            writer.writerow(header)
         f.flush()
         # ensure we write at least one row
         rid = 1
@@ -125,7 +133,8 @@ def generate_file(path: str, target_bytes: int, verbose: bool = False):
 
 def main(argv=None):
     p = argparse.ArgumentParser(description="Generate a CSV log file of approximate size.")
-    p.add_argument("--size", "-s", default="100MB", help="Target size (e.g. 100MB, 1G, 512K). Default: 500MB")
+    p.add_argument("--size", "-s", default="1GB", help="Target size (e.g. 100MB, 1G, 512K). Default: 1GB")
+    p.add_argument("--header", dest="header", action="store_true", help="Include CSV header row (default: no header)")
     # Output filename is hardcoded to 'log.csv' per workspace convention
     args = p.parse_args(argv)
 
@@ -143,7 +152,7 @@ def main(argv=None):
     # Always verbose per workspace convention
     print(f"Generating file '{output_path}' target={target} bytes")
 
-    rows = generate_file(output_path, target, verbose=True)
+    rows = generate_file(output_path, target, verbose=True, include_header=args.header)
 
     print(f"Done. Wrote {rows} rows to {output_path}")
 
